@@ -1,0 +1,11 @@
+{
+  "name": "scrape-leads",
+  "description": "Generate leads from Google Maps, Instagram, TikTok, and YouTube using Apify",
+  "version": "1.0.0",
+  "files": [
+    "SKILL.md",
+    "references/actors.md",
+    "references/enrichment.md"
+  ],
+  "post_install": "This skill requires the Apify MCP. Run /scrape-leads and it will walk you through setup."
+}
