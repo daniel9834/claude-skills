@@ -1,11 +1,11 @@
 #!/bin/bash
-# Claude Skills Installer — github.com/askdandonovan/claude-skills
-# Usage: curl -fsSL https://raw.githubusercontent.com/askdandonovan/claude-skills/main/install.sh | bash -s <skill-name>
+# Claude Skills Installer — github.com/daniel9834/claude-skills
+# Usage: curl -fsSL https://raw.githubusercontent.com/daniel9834/claude-skills/main/install.sh | bash -s <skill-name>
 
 set -e
 
 SKILL_NAME="${1:-}"
-REPO="askdandonovan/claude-skills"
+REPO="daniel9834/claude-skills"
 BRANCH="main"
 BASE_URL="https://raw.githubusercontent.com/$REPO/$BRANCH"
 SKILLS_DIR="$HOME/.claude/skills"
