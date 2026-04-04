@@ -41,7 +41,7 @@ MANIFEST=$(curl -fsSL "$MANIFEST_URL" 2>/dev/null) || {
 }
 
 # Parse file list from manifest
-FILES=$(echo "$MANIFEST" | grep -o '"[^"]*"' | tr -d '"' | grep -v "^\[" | grep -v "^\]")
+FILES=$(echo "$MANIFEST" | python3 -c "import sys,json; print('\n'.join(json.load(sys.stdin)['files']))")
 
 # Create skill directory
 INSTALL_DIR="$SKILLS_DIR/$SKILL_NAME"
