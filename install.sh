@@ -40,8 +40,18 @@ MANIFEST=$(curl -fsSL "$MANIFEST_URL" 2>/dev/null) || {
   exit 1
 }
 
-# Parse file list from manifest
-FILES=$(echo "$MANIFEST" | python3 -c "import sys,json; print('\n'.join(json.load(sys.stdin)['files']))")
+# Parse file list from manifest using python3 JSON parser
+FILES=$(echo "$MANIFEST" | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+for f in data['files']:
+    print(f)
+" 2>/dev/null)
+
+if [ -z "$FILES" ]; then
+  echo -e "${RED}Failed to parse manifest. Ensure python3 is installed.${NC}"
+  exit 1
+fi
 
 # Create skill directory
 INSTALL_DIR="$SKILLS_DIR/$SKILL_NAME"
@@ -49,7 +59,8 @@ mkdir -p "$INSTALL_DIR"
 
 # Download each file
 echo ""
-for FILE in $FILES; do
+while IFS= read -r FILE; do
+  [ -z "$FILE" ] && continue
   # Create subdirectories if needed
   FILE_DIR=$(dirname "$FILE")
   if [ "$FILE_DIR" != "." ]; then
@@ -57,12 +68,12 @@ for FILE in $FILES; do
   fi
 
   echo -n "  Downloading $FILE... "
-  curl -fsSL "$BASE_URL/$SKILL_NAME/$FILE" -o "$INSTALL_DIR/$FILE" 2>/dev/null && {
+  if curl -fsSL "$BASE_URL/$SKILL_NAME/$FILE" -o "$INSTALL_DIR/$FILE" 2>/dev/null; then
     echo -e "${GREEN}done${NC}"
-  } || {
+  else
     echo -e "${RED}failed${NC}"
-  }
-done
+  fi
+done <<< "$FILES"
 
 echo ""
 echo "─────────────────────────────────"
@@ -70,13 +81,18 @@ echo -e "${GREEN}Installed to: $INSTALL_DIR${NC}"
 echo ""
 
 # Check for post-install instructions
-if echo "$MANIFEST" | grep -q '"post_install"'; then
-  POST_MSG=$(echo "$MANIFEST" | python3 -c "import sys,json; print(json.load(sys.stdin).get('post_install',''))" 2>/dev/null || echo "")
-  if [ -n "$POST_MSG" ]; then
-    echo -e "${YELLOW}Next step:${NC}"
-    echo "  $POST_MSG"
-    echo ""
-  fi
+POST_MSG=$(echo "$MANIFEST" | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+msg = data.get('post_install', '')
+if msg:
+    print(msg)
+" 2>/dev/null || echo "")
+
+if [ -n "$POST_MSG" ]; then
+  echo -e "${YELLOW}Next step:${NC}"
+  echo "  $POST_MSG"
+  echo ""
 fi
 
 echo "Restart Claude Code, then type /$SKILL_NAME to get started."
