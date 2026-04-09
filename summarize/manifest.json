@@ -1,0 +1,8 @@
+{
+  "name": "summarize",
+  "description": "Distill any content into what actually matters — URLs, articles, videos, PDFs, documents, pasted text",
+  "version": "1.0.0",
+  "files": [
+    "SKILL.md"
+  ]
+}

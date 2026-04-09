@@ -24,6 +24,7 @@ if [ -z "$SKILL_NAME" ]; then
   echo ""
   echo "Available skills:"
   echo "  scrape-leads    — Generate leads from Google Maps, Instagram, TikTok, YouTube"
+  echo "  summarize       — Distill any content into what actually matters"
   echo ""
   exit 1
 fi
