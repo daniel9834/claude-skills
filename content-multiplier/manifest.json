@@ -1,0 +1,14 @@
+{
+  "name": "content-multiplier",
+  "description": "Turn one piece of content into platform-native posts across LinkedIn, X, Instagram, TikTok, YouTube, and Threads.",
+  "version": "1.0.0",
+  "files": [
+    "SKILL.md",
+    "platforms/instagram.md",
+    "platforms/linkedin.md",
+    "platforms/threads.md",
+    "platforms/tiktok.md",
+    "platforms/twitter.md",
+    "platforms/youtube.md"
+  ]
+}
