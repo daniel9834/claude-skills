@@ -728,8 +728,7 @@ Every run of this skill should feel like getting a deliverable from a senior con
 3. **Use simple indentation (2 spaces) for nested content.** Consistent throughout.
 4. **Status markers:** `done`, `cut`, `skip`, `pending` — plain text, no symbols.
 5. **File paths** relative to project root with `./` prefix. Show actual paths, not placeholders.
-6. **Line width under 55 characters** for terminal readability. File paths and URLs may exceed this.
-7. **No emoji.** Ever. Professional restraint.
+6. **No emoji.** Ever. Professional restraint.
 8. **No markdown formatting in output.** No `**bold**`, no `# headers`, no `` `backticks` `` in the formatted output blocks. Use caps and indentation for hierarchy instead.
 
 ### Required Sections
