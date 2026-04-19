@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5 Marketing Skills for Claude — Setup Guide</title>
+<meta name="description" content="Install the top 5 marketing skills for Claude. Copywriting, ad creative, SEO, email sequences, and CRO. Works in Claude Code and the Claude browser/desktop app. Step-by-step setup guide.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #0F172A; --ink-soft: #334155; --ink-muted: #64748B;
+    --surface: #ffffff; --surface-warm: #F8FAFC; --surface-code: #F1F5F9;
+    --border: #E2E8F0; --border-light: #F1F5F9;
+    --accent: #0D9488; --accent-light: rgba(13,148,136,0.08); --accent-hover: #0F766E;
+    --copied: #0D9488;
+    --font-display: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+    --max-w: 760px;
+    --space-xs: 0.5rem; --space-sm: 1rem; --space-md: 1.5rem;
+    --space-lg: 2.5rem; --space-xl: 4rem; --space-2xl: 6rem;
+  }
+  html { font-size: 16px; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+  body { font-family: var(--font-body); color: var(--ink); background: var(--surface); line-height: 1.7; overflow-x: hidden; }
+  ::selection { background: var(--accent-light); color: var(--accent); }
+  a { color: var(--accent); font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--accent); }
+  a:hover { color: var(--accent-hover); border-color: var(--accent-hover); }
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--space-md); }
+
+  .hero { padding: var(--space-2xl) 0 var(--space-xl); text-align: left; }
+  .hero-label { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: var(--space-sm); display: inline-block; }
+  .hero h1 { font-family: var(--font-display); font-size: clamp(2.2rem, 6vw, 3rem); line-height: 1.15; color: var(--ink); margin-bottom: var(--space-md); font-weight: 800; letter-spacing: -0.03em; }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero-sub { font-size: 1.1rem; color: var(--ink-soft); line-height: 1.7; max-width: 560px; }
+  .hero-meta { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-md); margin-top: var(--space-lg); padding-top: var(--space-md); border-top: 1px solid var(--border); }
+  .hero-meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .hero-meta-value { font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); }
+  .hero-meta-label { font-size: 0.8rem; color: var(--ink-muted); }
+
+  /* Tab Bar */
+  .tab-bar { position: sticky; top: 0; z-index: 100; background: var(--surface); border-bottom: 1px solid var(--border); padding: var(--space-sm) 0; }
+  .tab-bar-inner { max-width: calc(var(--max-w) - 3rem); margin: 0 auto; padding: 4px; display: flex; gap: 4px; background: var(--surface-warm); border: 1px solid var(--border); border-radius: 10px; }
+  .tab-btn { flex: 1; padding: 10px 16px; font-family: var(--font-body); font-size: 0.88rem; font-weight: 600; color: var(--ink-muted); background: transparent; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; text-align: center; }
+  .tab-btn:hover { color: var(--ink-soft); background: var(--surface); }
+  .tab-btn.active { color: var(--surface); background: var(--accent); box-shadow: 0 1px 3px rgba(13,148,136,0.3); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .preview { margin: var(--space-lg) 0 var(--space-xl); padding: var(--space-lg); background: var(--surface-warm); border: 1px solid var(--border); border-radius: 12px; }
+  .preview-label { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: var(--space-md); }
+  .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); }
+  .preview-item { padding: var(--space-sm) var(--space-md); background: var(--surface); border: 1px solid var(--border-light); border-radius: 8px; transition: border-color 0.2s ease; }
+  .preview-item:hover { border-color: var(--accent); }
+  .preview-item-title { font-weight: 600; font-size: 0.9rem; color: var(--ink); margin-bottom: 2px; }
+  .preview-item-desc { font-size: 0.8rem; color: var(--ink-muted); line-height: 1.5; }
+
+  .section { padding: var(--space-xl) 0; border-top: 1px solid var(--border); }
+  .section:first-of-type { border-top: none; }
+
+  .step { margin-bottom: var(--space-xl); position: relative; }
+  .step:last-child { margin-bottom: 0; }
+  .step-header { display: flex; align-items: flex-start; gap: var(--space-md); margin-bottom: var(--space-md); }
+  .step-number { flex-shrink: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 1.3rem; color: var(--accent); background: var(--accent-light); border-radius: 50%; margin-top: 2px; }
+  .step-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; line-height: 1.3; letter-spacing: -0.02em; color: var(--ink); padding-top: 6px; }
+  .step-body { padding-left: calc(44px + var(--space-md)); }
+  .step-body p { margin-bottom: var(--space-sm); color: var(--ink-soft); font-size: 0.95rem; }
+  .step-body p strong { color: var(--ink); font-weight: 600; }
+
+  .code-block { position: relative; margin: var(--space-sm) 0 var(--space-md); background: var(--surface-code); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .code-block-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px 8px 16px; border-bottom: 1px solid var(--border-light); background: var(--surface-warm); }
+  .code-block-label { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-muted); }
+  .copy-btn { display: flex; align-items: center; gap: 5px; padding: 5px 12px; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; color: var(--ink-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: all 0.15s ease; }
+  .copy-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-light); }
+  .copy-btn.copied { color: var(--copied); border-color: var(--copied); background: var(--accent-light); }
+  .copy-btn svg { width: 14px; height: 14px; }
+  .code-block pre { padding: var(--space-md); overflow-x: auto; }
+  .code-block code { font-family: var(--font-mono); font-size: 0.88rem; line-height: 1.7; color: var(--ink); }
+
+  .note { padding: var(--space-sm) var(--space-md); background: var(--accent-light); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; margin: var(--space-sm) 0 var(--space-md); font-size: 0.88rem; color: var(--ink-soft); line-height: 1.65; }
+  .note strong { color: var(--accent); font-weight: 600; }
+  .note-warm { background: #fef9f0; border-left-color: #c4922a; }
+  .note-warm strong { color: #96700f; }
+
+  .skill-card { margin-bottom: var(--space-md); padding: var(--space-md); background: var(--surface-warm); border: 1px solid var(--border); border-radius: 10px; }
+  .skill-card-header { display: flex; align-items: center; gap: var(--space-sm); margin-bottom: 8px; }
+  .skill-card-number { flex-shrink: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 0.85rem; font-weight: 800; color: var(--accent); background: var(--accent-light); border-radius: 50%; }
+  .skill-card-title { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--ink); }
+  .skill-card-body { font-size: 0.9rem; color: var(--ink-soft); line-height: 1.65; margin-bottom: 8px; }
+
+  .expandable { margin: var(--space-sm) 0; }
+  .expand-toggle { display: flex; align-items: center; gap: 6px; font-family: var(--font-body); font-size: 0.85rem; color: var(--ink-muted); background: none; border: none; cursor: pointer; padding: 4px 0; transition: color 0.15s ease; }
+  .expand-toggle:hover { color: var(--accent); }
+  .expand-toggle svg { width: 16px; height: 16px; transition: transform 0.2s ease; }
+  .expand-toggle.open svg { transform: rotate(90deg); }
+  .expand-content { display: none; padding-top: var(--space-xs); }
+  .expand-content.show { display: block; }
+
+  .step-connector { width: 1px; height: 32px; background: var(--border); margin: 0 0 0 22px; }
+
+  /* UI Steps (for app tab) */
+  .ui-steps { margin: var(--space-sm) 0 var(--space-md); padding: var(--space-md) var(--space-lg); background: var(--surface-code); border: 1px solid var(--border); border-radius: 10px; }
+  .ui-steps-label { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: var(--space-sm); }
+  .ui-step { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; font-size: 0.9rem; color: var(--ink-soft); line-height: 1.6; }
+  .ui-step:last-child { margin-bottom: 0; }
+  .ui-step-num { flex-shrink: 0; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; color: var(--accent); }
+  .ui-step code { font-family: var(--font-mono); font-size: 0.82rem; background: var(--surface); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border-light); }
+
+  /* Download button */
+  .download-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; background: var(--surface-code); border: 1px solid var(--border); border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--border); transition: all 0.15s ease; margin: var(--space-xs) 0; }
+  .download-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+  .footer { padding: var(--space-xl) 0 var(--space-lg); border-top: 1px solid var(--border); text-align: center; }
+  .footer-cta { font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); margin-bottom: var(--space-xs); }
+  .footer-sub { font-size: 0.9rem; color: var(--ink-muted); margin-bottom: var(--space-md); }
+  .footer-link { display: inline-flex; align-items: center; gap: 6px; padding: 12px 28px; font-family: var(--font-body); font-weight: 600; font-size: 0.9rem; color: #ffffff; background: var(--accent); border: none; border-radius: 12px; text-decoration: none; transition: all 0.2s ease; border-bottom: none; }
+  .footer-link:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(13,148,136,0.25); }
+
+  @media (max-width: 600px) {
+    :root { --space-xl: 3rem; --space-2xl: 4rem; }
+    .hero h1 { font-size: 2rem; }
+    .preview-grid { grid-template-columns: 1fr; }
+    .step-body { padding-left: 0; margin-top: var(--space-sm); }
+    .step-header { gap: var(--space-sm); }
+    .step-number { width: 36px; height: 36px; font-size: 1.1rem; }
+    .code-block pre { padding: var(--space-sm); }
+    .code-block code { font-size: 0.8rem; }
+    .tab-btn { font-size: 0.8rem; padding: 8px 10px; }
+    .ui-steps { padding: var(--space-sm) var(--space-md); }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .step, .preview, .hero-meta, .skill-card { opacity: 0; transform: translateY(16px); animation: fadeUp 0.5s ease forwards; }
+    .hero-meta { animation-delay: 0.1s; } .preview { animation-delay: 0.15s; }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero">
+  <div class="container">
+    <span class="hero-label">Setup Guide</span>
+    <h1>5 marketing skills that turn Claude into your <em>marketing team</em></h1>
+    <p class="hero-sub">One repo. 32 skills. Works in Claude Code and the Claude browser/desktop app. Here's how to set it up and which 5 skills to use first.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><span class="hero-meta-value">4</span><span class="hero-meta-label">Steps</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-value">~8 min</span><span class="hero-meta-label">Setup time</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-value">32</span><span class="hero-meta-label">Skills included</span></div>
+      <div class="hero-meta-item"><span class="hero-meta-value">$0</span><span class="hero-meta-label">Extra cost</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ WHAT IS THIS ═══════════ -->
+<div class="container">
+  <p style="color: var(--ink-soft); font-size: 0.95rem; margin-bottom: var(--space-md);">
+    <strong style="color: var(--ink)">Skills</strong> are add-ons that teach Claude how to handle specific marketing tasks. Without skills, Claude is smart but generic. With the right skills installed, it writes landing page copy using real conversion frameworks, generates platform-specific ad variations, and audits your site for SEO issues — not vague advice, specific fixes.
+  </p>
+  <p style="color: var(--ink-soft); font-size: 0.95rem; margin-bottom: var(--space-md);">
+    These skills come from <a href="https://github.com/coreyhaines31/marketingskills" target="_blank" rel="noopener">Corey Haynes' marketing skills repo</a> (21,800+ stars on GitHub). They're free and open source.
+  </p>
+</div>
+
+<!-- ═══════════ WHAT YOU'LL HAVE ═══════════ -->
+<div class="container">
+  <div class="preview">
+    <div class="preview-label">What you'll have after this</div>
+    <div class="preview-grid">
+      <div class="preview-item"><div class="preview-item-title">Copywriting</div><div class="preview-item-desc">Rewrite any page using conversion frameworks</div></div>
+      <div class="preview-item"><div class="preview-item-title">Ad Creative</div><div class="preview-item-desc">Generate ad variations for every platform</div></div>
+      <div class="preview-item"><div class="preview-item-title">SEO Audit</div><div class="preview-item-desc">Find what's broken in your Google rankings</div></div>
+      <div class="preview-item"><div class="preview-item-title">AI Search (GEO)</div><div class="preview-item-desc">Get cited by ChatGPT, Perplexity, and AI Overviews</div></div>
+      <div class="preview-item"><div class="preview-item-title">Email Sequences</div><div class="preview-item-desc">Welcome, nurture, and launch flows</div></div>
+      <div class="preview-item"><div class="preview-item-title">Page CRO</div><div class="preview-item-desc">Audit any page and fix what's not converting</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ TAB BAR ═══════════ -->
+<div class="tab-bar">
+  <div class="tab-bar-inner">
+    <button class="tab-btn active" data-tab="code" onclick="switchTab('code')">Claude Code</button>
+    <button class="tab-btn" data-tab="app" onclick="switchTab('app')">Claude Browser / Desktop App</button>
+  </div>
+</div>
+
+
+<!-- ╔═══════════════════════════════════════════════════╗ -->
+<!-- ║           TAB: CLAUDE CODE                        ║ -->
+<!-- ╚═══════════════════════════════════════════════════╝ -->
+<div class="tab-content active" data-tab="code">
+
+<div class="container">
+  <section class="section" style="border-top: none; padding-top: var(--space-md);">
+    <div class="note note-warm">
+      <strong>Before you start:</strong> You need Claude Code installed and a Claude Pro plan ($20/mo) or higher. The marketing skills themselves are free. If you haven't set up Claude Code yet, run <code>npm install -g @anthropic-ai/claude-code</code> in your terminal first.
+    </div>
+  </section>
+</div>
+
+<!-- Step 1: Install -->
+<div class="container">
+  <section class="section" style="border-top: none; padding-top: 0;">
+    <div class="step">
+      <div class="step-header"><div class="step-number">1</div><h2 class="step-title">Install the marketing skills</h2></div>
+      <div class="step-body">
+        <p>One command installs all 32 skills from <a href="https://github.com/coreyhaines31/marketingskills" target="_blank" rel="noopener">Corey Haynes' repo</a>.</p>
+        <div class="code-block"><div class="code-block-header"><span class="code-block-label">Terminal</span><button class="copy-btn" onclick="copyCode(this, 'npx skills add coreyhaines31/marketingskills')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>npx skills add coreyhaines31/marketingskills</code></pre></div>
+        <p>All 32 skills install in about 30 seconds. You only need 5 of them to cover most of your marketing.</p>
+      </div>
+    </div>
+
+    <div class="step-connector"></div>
+
+    <!-- Step 2: Product marketing context -->
+    <div class="step">
+      <div class="step-header"><div class="step-number">2</div><h2 class="step-title">Run the product-marketing-context skill first</h2></div>
+      <div class="step-body">
+        <p>This is the step most people skip, and it's why their output is generic. This skill interviews you about your business. Every other skill checks it before doing anything.</p>
+        <div class="code-block"><div class="code-block-header"><span class="code-block-label">Claude Code</span><button class="copy-btn" onclick="copyCode(this, '/product-marketing-context — Interview me about my business so every other marketing skill has the context it needs.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>/product-marketing-context — Interview me about my business so every other marketing skill has the context it needs.</code></pre></div>
+        <p>Claude asks about your product, audience, positioning, and competitors. Answer in plain English. Takes about 3 minutes. Once done, every skill below automatically knows who you are and what you sell.</p>
+        <div class="note"><strong>This is the difference between generic and specific.</strong> Without this step, the copywriting skill writes generic landing page copy. With it, Claude writes copy that references your specific product, uses your tone of voice, and speaks to your actual customer.</div>
+      </div>
+    </div>
+
+    <div class="step-connector"></div>
+
+    <!-- Step 3: Use the skills -->
+    <div class="step">
+      <div class="step-header"><div class="step-number">3</div><h2 class="step-title">Use the 5 skills that matter</h2></div>
+      <div class="step-body">
+        <p>There are 32 skills in the library. These are the 5 that handle 90% of your marketing work. Each one has the best prompt to start with, what good output looks like, the follow-up prompt most people miss, and the one mistake that makes the output bad.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Skills Cards (Code Tab) -->
+<div class="container">
+  <section class="section">
+
+    <!-- SKILL 1: Copywriting -->
+    <div class="skill-card">
+      <div class="skill-card-header"><div class="skill-card-number">1</div><div class="skill-card-title">Copywriting</div></div>
+      <div class="skill-card-body">Paste your landing page URL and Claude rewrites your headlines, subheads, and CTAs using real conversion frameworks (PAS, AIDA, Before-After-Bridge). It applies a specific structure to each section of your page.</div>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 8px 0 4px;">Best first prompt:</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Start here</span><button class="copy-btn" onclick="copyCode(this, '/copywriting — Read my landing page at [YOUR URL]. Identify the 3 weakest sections of copy and rewrite each one. Show me the before and after side by side so I can see what changed and why.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>/copywriting — Read my landing page at [YOUR URL]. Identify the 3 weakest sections of copy and rewrite each one. Show me the before and after side by side so I can see what changed and why.</code></pre></div>
+      <p style="font-size: 0.82rem; color: var(--ink-muted); margin-bottom: 4px;"><strong style="color: var(--ink);">What good output looks like:</strong> Claude should return specific rewrites with explanations like "Your headline talks about your company. I've rewritten it to talk about the customer's problem instead." If it gives vague advice like "improve your headline," give it more context about your audience.</p>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 12px 0 4px;">Follow-up prompt:</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Then run this</span><button class="copy-btn" onclick="copyCode(this, '/page-cro — Now score the rewritten copy you just produced. Does the new version actually convert better? What else should I fix?')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>/page-cro — Now score the rewritten copy you just produced. Does the new version actually convert better? What else should I fix?</code></pre></div>
+      <div class="note"><strong>Common mistake:</strong> Saying "rewrite my landing page." Too vague. Instead, tell Claude which sections to focus on and what's not working. "My headline doesn't explain what we do" or "people aren't clicking the CTA" gives Claude something to solve.</div>
+    </div>
+
+    <!-- SKILL 2: Ad Creative -->
+    <div class="skill-card">
+      <div class="skill-card-header"><div class="skill-card-number">2</div><div class="skill-card-title">Ad Creative</div></div>
+      <div class="skill-card-body">Tell Claude what you're advertising and which platforms you run on. It writes headlines, descriptions, primary text, and CTAs — each one tailored to the platform. Meta gets story-based copy, Google gets short headlines, LinkedIn gets professional tone.</div>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 8px 0 4px;">Best first prompt:</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Start here</span><button class="copy-btn" onclick="copyCode(this, '/ad-creative — Here is my best-performing ad: [PASTE YOUR AD TEXT]. Write 10 variations in this style for Meta and Google Ads. Keep the same tone but test different hooks and CTAs.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>/ad-creative — Here is my best-performing ad: [PASTE YOUR AD TEXT]. Write 10 variations in this style for Meta and Google Ads. Keep the same tone but test different hooks and CTAs.</code></pre></div>
+      <p style="font-size: 0.82rem; color: var(--ink-muted); margin-bottom: 4px;"><strong style="color: var(--ink);">What good output looks like:</strong> Each variation should feel different — not the same sentence reworded 10 times. You should see different angles: pain-point hooks, benefit-led hooks, social proof hooks, urgency hooks. If they all sound the same, tell Claude "these are too similar, give me more variety in the angles."</p>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 12px 0 4px;">Follow-up prompt:</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Then run this</span><button class="copy-btn" onclick="copyCode(this, '/ad-creative — Now take the 3 strongest variations and write 5 more versions of each. I want to A/B test these.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>/ad-creative — Now take the 3 strongest variations and write 5 more versions of each. I want to A/B test these.</code></pre></div>
+      <div class="note"><strong>Common mistake:</strong> Saying "write me ads" with no reference point. If you give Claude your best-performing ad first, the output jumps from C+ to A because it has a style to build from. No reference = generic output.</div>
+    </div>
+
+    <!-- SKILL 3: SEO + GEO (two skills) -->
+    <div class="skill-card">
+      <div class="skill-card-header"><div class="skill-card-number">3</div><div class="skill-card-title">SEO Audit + AI Search (GEO)</div></div>
+      <div class="skill-card-body">This is actually <strong>two separate skills</strong> that work together. The <strong>seo-audit</strong> skill handles traditional Google rankings — keywords, technical issues, content structure. The <strong>ai-seo</strong> skill handles AI search visibility — getting cited by ChatGPT, Perplexity, and Google AI Overviews. Install both. Run both.</div>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 8px 0 4px;">Best first prompt (Google SEO):</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Run this first</span><button class="copy-btn" onclick="copyCode(this, '/seo-audit — Run a full SEO audit on [YOUR URL]. Check keyword gaps, content structure, technical issues. Prioritise the fixes by impact.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>/seo-audit — Run a full SEO audit on [YOUR URL]. Check keyword gaps, content structure, technical issues. Prioritise the fixes by impact.</code></pre></div>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 12px 0 4px;">Then check AI search visibility (GEO):</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Then run this</span><button class="copy-btn" onclick="copyCode(this, '/ai-seo — Score my visibility on ChatGPT, Perplexity, and Google AI Overviews for my key queries. Tell me what to change so AI search engines actually cite my content.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>/ai-seo — Score my visibility on ChatGPT, Perplexity, and Google AI Overviews for my key queries. Tell me what to change so AI search engines actually cite my content.</code></pre></div>
+      <p style="font-size: 0.82rem; color: var(--ink-muted); margin-bottom: 4px;"><strong style="color: var(--ink);">What good output looks like:</strong> A prioritised list of specific issues — "your homepage has no H1 tag" or "you're not showing up in ChatGPT for [your keyword] because your content lacks structured data." If the report is vague, add "be specific about what to change on each page."</p>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 12px 0 4px;">Follow-up prompt:</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Competitor check</span><button class="copy-btn" onclick="copyCode(this, '/seo-audit — Now run the same audit on my competitor at [COMPETITOR URL]. Show me where they rank and I don\'t, and what content I should create to close the gap.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>/seo-audit — Now run the same audit on my competitor at [COMPETITOR URL]. Show me where they rank and I don't, and what content I should create to close the gap.</code></pre></div>
+      <div class="note"><strong>Common mistake:</strong> Only checking Google. Half of your potential customers are now searching on ChatGPT and Perplexity. If your content isn't structured for AI search, you're invisible to a growing chunk of your market. Run both skills.</div>
+    </div>
+
+    <!-- SKILL 4: Email Sequence -->
+    <div class="skill-card">
+      <div class="skill-card-header"><div class="skill-card-number">4</div><div class="skill-card-title">Email Sequence</div></div>
+      <div class="skill-card-body">Tell Claude what your business does and what the sequence is for — welcome series, product launch, nurture flow, re-engagement. It writes subject lines, preview text, body copy, CTAs, send timing, and branching logic based on opens and clicks.</div>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 8px 0 4px;">Best first prompt:</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Start here</span><button class="copy-btn" onclick="copyCode(this, '/email-sequence — Write a 6-email welcome sequence for new subscribers. My lead magnet is [WHAT THEY DOWNLOADED]. The goal is to build trust and get them to [YOUR DESIRED ACTION]. Include subject lines, send timing in days, and what to send if they don\'t open email 3.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>/email-sequence — Write a 6-email welcome sequence for new subscribers. My lead magnet is [WHAT THEY DOWNLOADED]. The goal is to build trust and get them to [YOUR DESIRED ACTION]. Include subject lines, send timing in days, and what to send if they don't open email 3.</code></pre></div>
+      <p style="font-size: 0.82rem; color: var(--ink-muted); margin-bottom: 4px;"><strong style="color: var(--ink);">What good output looks like:</strong> Each email should have a clear purpose — not six versions of "hey, just checking in." Email 1 delivers the lead magnet. Email 2 shares a quick win. Email 3 tells a story. Email 4 handles objections. Email 5 creates urgency. Email 6 makes the ask. If all six sound the same, tell Claude "each email needs a different job."</p>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 12px 0 4px;">Follow-up prompt:</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Then run this</span><button class="copy-btn" onclick="copyCode(this, '/email-sequence — Now write a 3-email re-engagement sequence for subscribers who haven\'t opened anything in 30 days. Make the subject lines impossible to ignore.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>/email-sequence — Now write a 3-email re-engagement sequence for subscribers who haven't opened anything in 30 days. Make the subject lines impossible to ignore.</code></pre></div>
+      <div class="note"><strong>Common mistake:</strong> Not telling Claude what the subscriber downloaded. If Claude knows they opted in for an "SEO checklist," the welcome sequence can reference SEO in every email. Without that context, you get generic "thanks for subscribing" emails.</div>
+    </div>
+
+    <!-- SKILL 5: Page CRO -->
+    <div class="skill-card">
+      <div class="skill-card-header"><div class="skill-card-number">5</div><div class="skill-card-title">Page CRO</div></div>
+      <div class="skill-card-body">Give Claude any page URL and it reads the whole thing like a conversion consultant — headline, copy, CTA placement, form fields, social proof, pricing section. It tells you what's broken and exactly what to change.</div>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 8px 0 4px;">Best first prompt:</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Start here</span><button class="copy-btn" onclick="copyCode(this, '/page-cro — Audit my sales page at [YOUR URL]. I\'m getting traffic but not enough conversions. List every issue you find, rank them by impact, and tell me exactly what to change for each one.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>/page-cro — Audit my sales page at [YOUR URL]. I'm getting traffic but not enough conversions. List every issue you find, rank them by impact, and tell me exactly what to change for each one.</code></pre></div>
+      <p style="font-size: 0.82rem; color: var(--ink-muted); margin-bottom: 4px;"><strong style="color: var(--ink);">What good output looks like:</strong> Specific issues with specific fixes. "Your CTA button says 'Submit' — change it to 'Get My Free Quote' because it tells the visitor what they get." If Claude gives you advice like "consider improving your value proposition," push back: "be more specific — which exact words on the page should change and what should they say instead?"</p>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 12px 0 4px;">Follow-up prompt:</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Then run this</span><button class="copy-btn" onclick="copyCode(this, '/copywriting — Now rewrite the 3 highest-impact sections you just flagged in the CRO audit. Show me the before and after for each one.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>/copywriting — Now rewrite the 3 highest-impact sections you just flagged in the CRO audit. Show me the before and after for each one.</code></pre></div>
+      <div class="note"><strong>Common mistake:</strong> Running the audit and then not doing anything with it. The follow-up prompt above chains CRO into copywriting — Claude finds the problems, then immediately fixes them. That's the whole point of having multiple skills. Use them together.</div>
+    </div>
+
+  </section>
+</div>
+
+<!-- All 32 skills (Code Tab) -->
+<div class="container">
+  <section class="section">
+    <div class="step">
+      <div class="step-header"><div class="step-number" style="background: var(--surface-warm); color: var(--ink);">+</div><h2 class="step-title">All 32 skills in the library</h2></div>
+      <div class="step-body">
+        <div class="expandable">
+          <button class="expand-toggle" onclick="toggleExpand(this)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg> See all 32 skills</button>
+          <div class="expand-content">
+            <p><strong>Content & copy:</strong> copywriting, copy-editing, content-strategy, social-content, cold-email</p>
+            <p><strong>Ads & growth:</strong> ad-creative, paid-ads, referral-program, launch-strategy, marketing-ideas</p>
+            <p><strong>SEO:</strong> seo-audit, ai-seo, schema-markup, programmatic-seo, site-architecture</p>
+            <p><strong>Conversion:</strong> page-cro, signup-flow-cro, onboarding-cro, popup-cro, form-cro, paywall-upgrade-cro, churn-prevention, ab-test-setup</p>
+            <p><strong>Email:</strong> email-sequence, lead-magnets</p>
+            <p><strong>Strategy:</strong> product-marketing-context, customer-research, pricing-strategy, competitor-alternatives, analytics-tracking, revops, sales-enablement, marketing-psychology, free-tool-strategy</p>
+          </div>
+        </div>
+        <div class="note"><strong>Start with the 5 skills above.</strong> Get comfortable using them on your own pages and campaigns before exploring the rest.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+</div><!-- end tab: code -->
+
+
+<!-- ╔═══════════════════════════════════════════════════╗ -->
+<!-- ║        TAB: CLAUDE BROWSER / DESKTOP APP          ║ -->
+<!-- ╚═══════════════════════════════════════════════════╝ -->
+<div class="tab-content" data-tab="app">
+
+<div class="container">
+  <section class="section" style="border-top: none; padding-top: var(--space-md);">
+    <div class="note note-warm">
+      <strong>Before you start:</strong> You need a Claude account at <strong>claude.ai</strong> (or the Claude desktop app). Free, Pro, Max, Team, or Enterprise — all work. You'll also need to enable one setting before skills work.
+    </div>
+  </section>
+</div>
+
+<!-- How to install (App) -->
+<div class="container">
+  <section class="section" style="border-top: none; padding-top: 0;">
+    <p style="font-size: 0.95rem; color: var(--ink-soft); margin-bottom: var(--space-sm);">
+      <strong style="color: var(--ink)">How installing works:</strong> In the Claude browser or desktop app, go to <strong>Customize</strong> in the sidebar, then <strong>Create new skills</strong>. You'll upload each skill as a zip file. No commands to type — everything is click-based.
+    </p>
+
+    <div class="ui-steps">
+      <div class="ui-steps-label">One-time setup (do this first)</div>
+      <div class="ui-step"><span class="ui-step-num">1.</span> Go to <code>Settings</code> (gear icon)</div>
+      <div class="ui-step"><span class="ui-step-num">2.</span> Click <code>Capabilities</code></div>
+      <div class="ui-step"><span class="ui-step-num">3.</span> Toggle on <code>Code execution and file creation</code></div>
+    </div>
+
+    <div class="note">
+      <strong>Why this matters:</strong> Skills need code execution to analyse pages, generate documents, and create files. Without this toggle, Claude can describe what it would do — but can't actually do it.
+    </div>
+  </section>
+</div>
+
+<!-- Step 1 (App): Download and upload skills -->
+<div class="container">
+  <section class="section">
+    <div class="step">
+      <div class="step-header"><div class="step-number">1</div><h2 class="step-title">Download and upload the skills</h2></div>
+      <div class="step-body">
+        <p>Download each skill zip below. Then in Claude, go to <strong>Customize</strong> → <strong>Create new skills</strong> → click the <strong>+</strong> button → <strong>Upload skill</strong> → select the zip file. Repeat for each skill.</p>
+
+        <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 16px 0 8px;">Start with this one — it's the foundation:</p>
+        <a href="downloads/product-marketing-context.zip" download class="download-btn">Download: Product Marketing Context</a>
+        <p style="font-size: 0.82rem; color: var(--ink-muted); margin: 4px 0 16px;">This interviews you about your business. Every other skill checks it first. Upload and run this before the rest.</p>
+
+        <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 16px 0 8px;">Then upload these 5:</p>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <a href="downloads/copywriting.zip" download class="download-btn">Download: Copywriting</a>
+          <a href="downloads/ad-creative.zip" download class="download-btn">Download: Ad Creative</a>
+          <a href="downloads/seo-audit.zip" download class="download-btn">Download: SEO Audit</a>
+          <a href="downloads/ai-seo.zip" download class="download-btn">Download: AI Search / GEO</a>
+          <a href="downloads/email-sequence.zip" download class="download-btn">Download: Email Sequence</a>
+          <a href="downloads/page-cro.zip" download class="download-btn">Download: Page CRO</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-connector"></div>
+
+    <!-- Step 2 (App): Run product-marketing-context -->
+    <div class="step">
+      <div class="step-header"><div class="step-number">2</div><h2 class="step-title">Tell Claude about your business</h2></div>
+      <div class="step-body">
+        <p>After uploading the product-marketing-context skill, paste this into a new Claude conversation:</p>
+        <div class="code-block"><div class="code-block-header"><span class="code-block-label">Paste into Claude</span><button class="copy-btn" onclick="copyCode(this, 'Use the product-marketing-context skill to interview me about my business. I want every other marketing skill to have context about who I am and what I sell.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>Use the product-marketing-context skill to interview me about my business. I want every other marketing skill to have context about who I am and what I sell.</code></pre></div>
+        <p>Answer Claude's questions in plain English. Takes about 3 minutes. Once done, every skill you use after this will know your business.</p>
+      </div>
+    </div>
+
+    <div class="step-connector"></div>
+
+    <!-- Step 3 (App): Use the skills -->
+    <div class="step">
+      <div class="step-header"><div class="step-number">3</div><h2 class="step-title">Use the 5 skills</h2></div>
+      <div class="step-body">
+        <p>The prompts are the same as the Claude Code tab — just paste them into your Claude conversation instead of the terminal. Here are the best starting prompts for each skill:</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Skills Cards (App Tab) -->
+<div class="container">
+  <section class="section">
+
+    <!-- SKILL 1: Copywriting -->
+    <div class="skill-card">
+      <div class="skill-card-header"><div class="skill-card-number">1</div><div class="skill-card-title">Copywriting</div></div>
+      <div class="skill-card-body">Paste your landing page URL and Claude rewrites your headlines, subheads, and CTAs using real conversion frameworks (PAS, AIDA, Before-After-Bridge). It applies a specific structure to each section of your page.</div>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 8px 0 4px;">Best first prompt:</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Paste into Claude</span><button class="copy-btn" onclick="copyCode(this, 'Use the copywriting skill. Read my landing page at [YOUR URL]. Identify the 3 weakest sections of copy and rewrite each one. Show me the before and after side by side so I can see what changed and why.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>Use the copywriting skill. Read my landing page at [YOUR URL]. Identify the 3 weakest sections of copy and rewrite each one. Show me the before and after side by side so I can see what changed and why.</code></pre></div>
+      <p style="font-size: 0.82rem; color: var(--ink-muted); margin-bottom: 4px;"><strong style="color: var(--ink);">What good output looks like:</strong> Claude should return specific rewrites with explanations like "Your headline talks about your company. I've rewritten it to talk about the customer's problem instead." If it gives vague advice like "improve your headline," give it more context about your audience.</p>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 12px 0 4px;">Follow-up prompt:</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Then paste this</span><button class="copy-btn" onclick="copyCode(this, 'Use the page-cro skill. Score the rewritten copy you just produced. Does the new version actually convert better? What else should I fix?')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>Use the page-cro skill. Score the rewritten copy you just produced. Does the new version actually convert better? What else should I fix?</code></pre></div>
+      <div class="note"><strong>Common mistake:</strong> Saying "rewrite my landing page." Too vague. Instead, tell Claude which sections to focus on and what's not working. "My headline doesn't explain what we do" or "people aren't clicking the CTA" gives Claude something to solve.</div>
+    </div>
+
+    <!-- SKILL 2: Ad Creative -->
+    <div class="skill-card">
+      <div class="skill-card-header"><div class="skill-card-number">2</div><div class="skill-card-title">Ad Creative</div></div>
+      <div class="skill-card-body">Tell Claude what you're advertising and which platforms you run on. It writes headlines, descriptions, primary text, and CTAs — each one tailored to the platform. Meta gets story-based copy, Google gets short headlines, LinkedIn gets professional tone.</div>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 8px 0 4px;">Best first prompt:</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Paste into Claude</span><button class="copy-btn" onclick="copyCode(this, 'Use the ad-creative skill. Here is my best-performing ad: [PASTE YOUR AD TEXT]. Write 10 variations in this style for Meta and Google Ads. Keep the same tone but test different hooks and CTAs.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>Use the ad-creative skill. Here is my best-performing ad: [PASTE YOUR AD TEXT]. Write 10 variations in this style for Meta and Google Ads. Keep the same tone but test different hooks and CTAs.</code></pre></div>
+      <p style="font-size: 0.82rem; color: var(--ink-muted); margin-bottom: 4px;"><strong style="color: var(--ink);">What good output looks like:</strong> Each variation should feel different — not the same sentence reworded 10 times. You should see different angles: pain-point hooks, benefit-led hooks, social proof hooks, urgency hooks. If they all sound the same, tell Claude "these are too similar, give me more variety in the angles."</p>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 12px 0 4px;">Follow-up prompt:</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Then paste this</span><button class="copy-btn" onclick="copyCode(this, 'Use the ad-creative skill. Take the 3 strongest variations and write 5 more versions of each. I want to A/B test these.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>Use the ad-creative skill. Take the 3 strongest variations and write 5 more versions of each. I want to A/B test these.</code></pre></div>
+      <div class="note"><strong>Common mistake:</strong> Saying "write me ads" with no reference point. If you give Claude your best-performing ad first, the output jumps from C+ to A because it has a style to build from. No reference = generic output.</div>
+    </div>
+
+    <!-- SKILL 3: SEO + GEO -->
+    <div class="skill-card">
+      <div class="skill-card-header"><div class="skill-card-number">3</div><div class="skill-card-title">SEO Audit + AI Search (GEO)</div></div>
+      <div class="skill-card-body">This is actually <strong>two separate skills</strong> that work together. The <strong>seo-audit</strong> skill handles traditional Google rankings — keywords, technical issues, content structure. The <strong>ai-seo</strong> skill handles AI search visibility — getting cited by ChatGPT, Perplexity, and Google AI Overviews. Install both. Run both.</div>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 8px 0 4px;">Best first prompt (Google SEO):</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Google SEO</span><button class="copy-btn" onclick="copyCode(this, 'Use the seo-audit skill. Run a full SEO audit on [YOUR URL]. Check keyword gaps, content structure, technical issues. Prioritise the fixes by impact.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>Use the seo-audit skill. Run a full SEO audit on [YOUR URL]. Check keyword gaps, content structure, technical issues. Prioritise the fixes by impact.</code></pre></div>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 12px 0 4px;">Then check AI search visibility (GEO):</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">AI Search / GEO</span><button class="copy-btn" onclick="copyCode(this, 'Use the ai-seo skill. Score my visibility on ChatGPT, Perplexity, and Google AI Overviews for my key queries. Tell me what to change so AI search engines actually cite my content.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>Use the ai-seo skill. Score my visibility on ChatGPT, Perplexity, and Google AI Overviews for my key queries. Tell me what to change so AI search engines actually cite my content.</code></pre></div>
+      <p style="font-size: 0.82rem; color: var(--ink-muted); margin-bottom: 4px;"><strong style="color: var(--ink);">What good output looks like:</strong> A prioritised list of specific issues — "your homepage has no H1 tag" or "you're not showing up in ChatGPT for [your keyword] because your content lacks structured data." If the report is vague, add "be specific about what to change on each page."</p>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 12px 0 4px;">Follow-up prompt:</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Competitor check</span><button class="copy-btn" onclick="copyCode(this, 'Use the seo-audit skill. Run the same audit on my competitor at [COMPETITOR URL]. Show me where they rank and I don\'t, and what content I should create to close the gap.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>Use the seo-audit skill. Run the same audit on my competitor at [COMPETITOR URL]. Show me where they rank and I don't, and what content I should create to close the gap.</code></pre></div>
+      <div class="note"><strong>Common mistake:</strong> Only checking Google. Half of your potential customers are now searching on ChatGPT and Perplexity. If your content isn't structured for AI search, you're invisible to a growing chunk of your market. Run both skills.</div>
+    </div>
+
+    <!-- SKILL 4: Email Sequence -->
+    <div class="skill-card">
+      <div class="skill-card-header"><div class="skill-card-number">4</div><div class="skill-card-title">Email Sequence</div></div>
+      <div class="skill-card-body">Tell Claude what your business does and what the sequence is for — welcome series, product launch, nurture flow, re-engagement. It writes subject lines, preview text, body copy, CTAs, send timing, and branching logic based on opens and clicks.</div>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 8px 0 4px;">Best first prompt:</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Paste into Claude</span><button class="copy-btn" onclick="copyCode(this, 'Use the email-sequence skill. Write a 6-email welcome sequence for new subscribers. My lead magnet is [WHAT THEY DOWNLOADED]. The goal is to build trust and get them to [YOUR DESIRED ACTION]. Include subject lines, send timing in days, and what to send if they don\'t open email 3.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>Use the email-sequence skill. Write a 6-email welcome sequence for new subscribers. My lead magnet is [WHAT THEY DOWNLOADED]. The goal is to build trust and get them to [YOUR DESIRED ACTION]. Include subject lines, send timing in days, and what to send if they don't open email 3.</code></pre></div>
+      <p style="font-size: 0.82rem; color: var(--ink-muted); margin-bottom: 4px;"><strong style="color: var(--ink);">What good output looks like:</strong> Each email should have a clear purpose — not six versions of "hey, just checking in." Email 1 delivers the lead magnet. Email 2 shares a quick win. Email 3 tells a story. Email 4 handles objections. Email 5 creates urgency. Email 6 makes the ask. If all six sound the same, tell Claude "each email needs a different job."</p>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 12px 0 4px;">Follow-up prompt:</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Then paste this</span><button class="copy-btn" onclick="copyCode(this, 'Use the email-sequence skill. Write a 3-email re-engagement sequence for subscribers who haven\'t opened anything in 30 days. Make the subject lines impossible to ignore.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>Use the email-sequence skill. Write a 3-email re-engagement sequence for subscribers who haven't opened anything in 30 days. Make the subject lines impossible to ignore.</code></pre></div>
+      <div class="note"><strong>Common mistake:</strong> Not telling Claude what the subscriber downloaded. If Claude knows they opted in for an "SEO checklist," the welcome sequence can reference SEO in every email. Without that context, you get generic "thanks for subscribing" emails.</div>
+    </div>
+
+    <!-- SKILL 5: Page CRO -->
+    <div class="skill-card">
+      <div class="skill-card-header"><div class="skill-card-number">5</div><div class="skill-card-title">Page CRO</div></div>
+      <div class="skill-card-body">Give Claude any page URL and it reads the whole thing like a conversion consultant — headline, copy, CTA placement, form fields, social proof, pricing section. It tells you what's broken and exactly what to change.</div>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 8px 0 4px;">Best first prompt:</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Paste into Claude</span><button class="copy-btn" onclick="copyCode(this, 'Use the page-cro skill. Audit my sales page at [YOUR URL]. I\'m getting traffic but not enough conversions. List every issue you find, rank them by impact, and tell me exactly what to change for each one.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>Use the page-cro skill. Audit my sales page at [YOUR URL]. I'm getting traffic but not enough conversions. List every issue you find, rank them by impact, and tell me exactly what to change for each one.</code></pre></div>
+      <p style="font-size: 0.82rem; color: var(--ink-muted); margin-bottom: 4px;"><strong style="color: var(--ink);">What good output looks like:</strong> Specific issues with specific fixes. "Your CTA button says 'Submit' — change it to 'Get My Free Quote' because it tells the visitor what they get." If Claude gives you advice like "consider improving your value proposition," push back: "be more specific — which exact words on the page should change and what should they say instead?"</p>
+      <p style="font-size: 0.82rem; font-weight: 600; color: var(--ink); margin: 12px 0 4px;">Follow-up prompt:</p>
+      <div class="code-block"><div class="code-block-header"><span class="code-block-label">Then paste this</span><button class="copy-btn" onclick="copyCode(this, 'Use the copywriting skill. Rewrite the 3 highest-impact sections you just flagged in the CRO audit. Show me the before and after for each one.')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre><code>Use the copywriting skill. Rewrite the 3 highest-impact sections you just flagged in the CRO audit. Show me the before and after for each one.</code></pre></div>
+      <div class="note"><strong>Common mistake:</strong> Running the audit and then not doing anything with it. The follow-up prompt above chains CRO into copywriting — Claude finds the problems, then immediately fixes them. That's the whole point of having multiple skills. Use them together.</div>
+    </div>
+
+  </section>
+</div>
+
+</div><!-- end tab: app -->
+
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<div class="container">
+  <footer class="footer">
+    <div class="footer-cta">Your marketing team is ready.</div>
+    <p class="footer-sub">Start with the product-marketing-context skill, then run the CRO audit on your homepage. That combo alone will show you exactly what to fix.</p>
+    <a href="https://instagram.com/askdandonovan" class="footer-link" target="_blank" rel="noopener">
+      Follow on Instagram
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+    </a>
+  </footer>
+</div>
+
+<script>
+  !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+  posthog.init('phc_mhTKMEqcUT8pUgUWiajsAV352rZyyNtcyK6GJqJjVT7g', {
+    api_host: 'https://us.i.posthog.com',
+    person_profiles: 'identified_only'
+  });
+</script>
+
+<script>
+  function copyCode(btn, text) {
+    posthog.capture('copy_clicked', { text: text.substring(0, 100), page: window.location.pathname });
+    navigator.clipboard.writeText(text).then(() => {
+      const original = btn.innerHTML;
+      btn.classList.add('copied');
+      btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied';
+      setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = original; }, 2000);
+    });
+  }
+  function toggleExpand(btn) {
+    const content = btn.nextElementSibling;
+    btn.classList.toggle('open');
+    content.classList.toggle('show');
+  }
+  function switchTab(tab) {
+    posthog.capture('tab_switched', { tab: tab, page: window.location.pathname });
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tab === tab);
+    });
+    document.querySelectorAll('.tab-content').forEach(content => {
+      content.classList.toggle('active', content.dataset.tab === tab);
+    });
+  }
+  document.querySelectorAll('.download-btn').forEach(link => {
+    link.addEventListener('click', () => {
+      posthog.capture('skill_downloaded', { file: link.getAttribute('href'), page: window.location.pathname });
+    });
+  });
+</script>
+
+</body>
+</html>
