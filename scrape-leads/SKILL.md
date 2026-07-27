@@ -2,8 +2,8 @@
 name: scrape-leads
 description: >
   Apify-powered lead generation for any business. Scrapes Google Maps for local
-  businesses, Instagram/TikTok/YouTube for creators and influencers, and the web
-  for online companies. First run asks 4 setup questions and saves your config —
+  businesses, Instagram/TikTok/YouTube/X for creators and influencers, and the
+  web for online companies. First run asks 4 setup questions and saves your config;
   every future run is one command. Outputs a formatted table + CSV. Optional email
   enrichment and outreach drafts. Use this skill whenever the user mentions "find
   leads", "scrape leads", "get leads", "lead generation", "find businesses",
@@ -43,118 +43,55 @@ and specific.
 
 ---
 
-### Step 0a: Check Prerequisites
+### Step 0a: Connect the Official Apify Plugin
 
-First, check if Node.js is installed (Apify's MCP server needs it):
-
-```bash
-node --version
-```
-
-**If Node.js is found (v18+):** Great — tell the user and move to Step 0b.
-
-**If Node.js is NOT found or below v18:** Tell the user:
-
-> "You need Node.js installed first. Here's the easiest way:
->
-> 1. Go to https://nodejs.org
-> 2. Click the big green button that says **'Download Node.js (LTS)'**
-> 3. Run the installer — just click Next/Continue through everything
-> 4. When it's done, come back here and tell me"
-
-**STOP and wait.** When they confirm, verify with `node --version` again.
-
----
-
-### Step 0b: Create an Apify Account
+Use Apify's hosted MCP service with OAuth. Never ask the user to paste an API
+token into chat. Never read or edit a secret-bearing MCP config on their behalf.
 
 Tell the user:
 
-> "Now we need an Apify account. Apify is the service that does the actual
-> scraping — it has a free tier that's enough to get started.
+> "Let's connect Apify securely through its official Claude Code plugin:
 >
-> 1. Go to **https://console.apify.com/sign-up**
-> 2. Sign up with Google or email — either works
-> 3. Once you're logged in, you should see your Apify dashboard"
-
-**STOP and ask:** "Let me know when you're signed up and logged in."
-
----
-
-### Step 0c: Get Your API Token
-
-Tell the user:
-
-> "Now grab your API token — this is what lets Claude Code talk to Apify.
+> 1. Run `/plugins` and open **Marketplaces**
+> 2. Choose **Add Marketplace**
+> 3. Add `https://github.com/apify/apify-claude-code-plugin`
+> 4. Install the `apify` plugin from **Discover**
+> 5. Run `/reload-plugins`
+> 6. Run `/mcp`, enable `plugin:apify:apify`, then choose **Authenticate**
+> 7. Approve the Apify OAuth request in your browser
 >
-> 1. Go to **https://console.apify.com/account/integrations**
->    (Or from your dashboard: click your profile icon → Settings → Integrations)
-> 2. You'll see a section called **'API token'**
-> 3. Click **'Copy'** next to your Personal API token
->
-> **Important:** This token is like a password. Don't share it publicly."
+> OAuth keeps your API token out of this chat and project files."
 
-**STOP and ask:** "Paste your API token here and I'll set everything up for you."
+**STOP and wait.** When they confirm authentication succeeded, call
+`search-actors` again.
 
-When they paste it, save it in a variable for the next step. If what they paste
-doesn't look like a token (too short, contains spaces, etc.), gently ask them to
-double-check they copied the full thing.
+If `/plugins` is unavailable, direct the user to Apify's current setup guide:
+https://docs.apify.com/integrations/mcp. Prefer the hosted
+`https://mcp.apify.com` connection with OAuth.
 
----
-
-### Step 0d: Connect Apify to Claude Code
-
-Now install the Apify MCP server. Read the user's `~/.claude/.mcp.json` file.
-
-If the file exists, add the `apify` entry to the existing `mcpServers` object.
-If it doesn't exist, create it.
-
-Add this entry (substitute the real token):
-
-```json
-"apify": {
-  "command": "npx",
-  "args": ["-y", "@anthropic-ai/apify-mcp"],
-  "env": {
-    "APIFY_TOKEN": "THE_TOKEN_THEY_PASTED"
-  }
-}
-```
-
-After writing the file, tell the user:
-
-> "Done! I've connected Apify to your Claude Code.
->
-> **One last step:** You need to restart Claude Code for this to take effect.
->
-> 1. Type `/exit` to close this session
-> 2. Open Claude Code again
-> 3. Run `/scrape-leads` and we'll pick up right where we left off
->
-> That's it — you only have to do this once. From now on, Apify will just work."
-
-**STOP here.** Do not proceed until Apify is connected. The user needs to restart
-Claude Code and run the skill again.
+Only use local stdio when the user explicitly requests it. Local stdio needs
+Node.js 18+ and the official `@apify/actors-mcp-server` package. The user must
+set `APIFY_TOKEN` in their own environment. They must never send it in chat or
+commit it to a project file.
 
 ---
 
 ### Troubleshooting (if anything goes wrong)
 
-**"npx: command not found":**
-Node.js isn't installed or isn't in PATH. Go back to Step 0a.
+**The browser does not open for OAuth:**
+Copy the displayed OAuth URL into a browser and complete authentication there.
 
 **"APIFY_TOKEN is invalid" or authentication errors:**
-The token was probably copied incorrectly. Ask them to go back to
-https://console.apify.com/account/integrations and copy it again. Make sure they
-get the full token — it's a long string of letters and numbers.
+Recommend OAuth first. For local stdio, ask the user to replace the token in
+their own environment. Never ask them to reveal it.
 
 **"Cannot find module" or npm errors:**
-Usually a network issue. Ask them to check their internet connection and try again.
-If it persists, try running `npm cache clean --force` and restarting.
+This only applies to local stdio. Verify Node.js 18+ and retry the official
+`@apify/actors-mcp-server` package.
 
 **The `search-actors` tool doesn't appear after restart:**
-Check that the entry was added to `~/.claude/.mcp.json` correctly. Read the file
-and verify the JSON is valid (no missing commas, no trailing commas). Fix if needed.
+Run `/plugins` to confirm the plugin is installed. Then run `/mcp` and confirm
+`plugin:apify:apify` is enabled and authenticated.
 
 ---
 
@@ -203,9 +140,13 @@ Keep it conversational — like a friend helping them set up, not a form.
 2. **Online / SaaS companies** (e-commerce stores, software companies, agencies)
 3. **Instagram creators or influencers**
 4. **TikTok creators**
-5. **YouTube creators**"
+5. **YouTube creators**
+6. **X creators or posts**
+7. **X audiences** (followers, following, lists, or communities)"
 
-Save as `lead_type`: `local_business`, `online_business`, `instagram_creators`, `tiktok_creators`, or `youtube_creators`.
+Save as `lead_type`: `local_business`, `online_business`,
+`instagram_creators`, `tiktok_creators`, `youtube_creators`, `x_creators`, or
+`x_audiences`.
 
 **Question 2 — Who specifically?**
 
@@ -217,6 +158,15 @@ This question varies by lead type:
   - Save as `search_query`
 - **Creators:** "What niche or keywords? For example: 'fitness influencers' or 'AI content creators'. And roughly what follower range? (e.g., 10k-100k)"
   - Save as `search_query` and `follower_range` (object with `min` and `max`)
+- **X creators or posts:** "What niche, keywords, hashtag, or advanced X query?
+  And roughly what author follower range?"
+  - Save as `search_query` and `follower_range`
+- **X audiences:** "Which X handles, list IDs, or community IDs should I use?
+  Do you want followers, following, verified followers, list members, list
+  followers, or community members?"
+  - Save targets as `x_targets`
+  - Save one of `followers`, `following`, `verified_followers`,
+    `list_members`, `list_followers`, or `community_members` as `x_relation`
 
 **Question 3 — How many:**
 
@@ -267,6 +217,10 @@ actor name, key input fields, and expected output fields.
    keywords matching the lead type, pick the top result, and call `fetch-actor-details`
 3. Save the resolved actor name to `lead-config.json` as `apify_actor` so re-runs skip this lookup
 
+For `x_creators`, use `xquik/x-tweet-scraper`. For `x_audiences`, use
+`xquik/x-follower-scraper`. Do not replace these with a similarly named Actor
+unless the requested Actor is unavailable and the user approves the fallback.
+
 ---
 
 ## Step 3: Run the Scraper
@@ -278,6 +232,12 @@ Call `call-actor` with:
 - The actor name from Step 2
 - The mapped input params
 - Set a reasonable timeout (actors for 50 results typically finish in 30-90 seconds)
+- Set `maxItems` from `max_results`
+- If the live tool exposes `maxTotalChargeUsd`, pass the user's approved cap
+
+Before the call, show the Actor name, item limit, and current pricing returned by
+`fetch-actor-details`. Ask for confirmation. Do not quote a fixed price from this
+file because Actor pricing can change.
 
 If the actor run takes too long, switch to async mode:
 1. Call `call-actor` with `async: true`
@@ -299,6 +259,8 @@ When the run completes, retrieve results with `get-actor-output` using the datas
 | Instagram creators | Username, Followers, Bio, Website |
 | TikTok creators | Username, Followers, Bio |
 | YouTube creators | Channel, Subscribers, Description, Website |
+| X creators | Username, Followers, Bio, Website, Example Post, Likes |
+| X audiences | Username, Name, Followers, Bio, Website, Source |
 
 Show the first 20 rows in the table. If there are more, say "Showing 20 of [X] — full results in CSV."
 
@@ -373,4 +335,10 @@ When the user runs `/scrape-leads --enrich`:
 - **No Apify MCP connected:** Run through Step 0 setup instructions.
 - **Actor run fails:** Read the error from `get-actor-run`. Common issues: invalid location, rate limiting, empty results. Suggest a fix.
 - **Zero results:** "No leads found for that search. Try broadening your criteria — a larger area or more general business type."
-- **Apify token missing:** "I can't find your Apify API token. Make sure it's configured in your MCP settings."
+- **Apify authentication missing:** "Apify is not authenticated. Open `/mcp`
+  and complete the OAuth flow."
+- **Price or spend cap unavailable:** Stop before the run. Show the current
+  pricing and ask the user whether to continue with the item limit alone.
+
+Xquik is an independent third-party service. Not affiliated with X Corp.
+"Twitter" and "X" are trademarks of X Corp.
