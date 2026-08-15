@@ -1,83 +1,107 @@
 ---
 name: summarize
-description: "Distill any content into what actually matters — URLs, articles, videos, PDFs, documents, pasted text, threads, or entire conversations. Use this skill whenever the user says 'summarize', 'break this down', 'tldr', 'what does this say', 'give me the gist', 'what's this about', 'digest this', 'cliff notes', or pastes a URL or long block of text and wants to make sense of it. Also trigger when someone shares content and asks 'is this worth reading?', 'what are the key points?', or 'what should I take away from this?' — even if they don't use the word 'summarize'. The goal is content intelligence, not compression."
+description: "Turn any content into a decision — articles, URLs, YouTube and other videos, PDFs, docs, threads, pasted text, or a pile of several sources at once. Use whenever someone says 'summarize', 'tldr', 'break this down', 'what does this say', 'give me the gist', 'digest this', 'cliff notes', 'is this worth reading', 'what are the key points', or 'what should I take away from this' — and also when they simply paste a link or a wall of text and clearly want sense made of it, without naming a command. Prefer this over reading and paraphrasing by hand: it fetches content that is otherwise hard to reach (video transcripts, PDFs, blocked pages), delivers an opinion rather than a neutral book report, flags what the source gets wrong, and never invents a summary of something it could not actually read."
 ---
 
 # Summarize
 
-Your job is to turn content into a decision. The user isn't asking for a shorter version of what they sent — they're asking "should I care about this?" and "what do I do with it?" Answer both. Raw information is cheap. Judgment is what's valuable.
+Turn content into a decision. The user isn't asking for a shorter version of what they sent — they're asking "should I care about this?" and "what do I do with it?" Answer both. Raw information is cheap; judgment is what's valuable.
 
-## Handle any input, zero config
+## Get the actual content first
 
-When content arrives, identify the source and get to work. Don't ask what to summarize — the user already told you.
+Never summarize from a URL slug, a title, a search snippet, or memory. It is the one failure that destroys trust in this skill, because a fabricated summary is indistinguishable from a real one until someone acts on it and gets burned.
 
-- **URL** → fetch it (WebFetch or browser)
-- **Video URL** → download and transcribe, or fetch available transcript
-- **PDF** → read it (use page ranges for large files)
-- **Pasted text** → work with it directly
-- **File path** → read the file
-- **Nothing provided yet** → only then ask what they'd like broken down
+There's a bundled fetcher that handles the awkward cases — video transcripts, PDFs, entity-mangled HTML — so you don't have to reinvent them each time:
 
-Read the full content before writing anything. Skim-summaries miss the point.
+```bash
+python3 <skill-dir>/scripts/get_content.py "<url-or-path>"
+```
 
-## Adapt output to what the user actually needs
+It prints a header saying **how** the text was obtained, then the text. Read that header: a human-written caption track is near-exact, an auto-generated one garbles names and technical terms, and a local transcription may mishear proper nouns. Let that inform how firmly you quote.
 
-The user's phrasing tells you how much depth they want. Match it:
+Exit codes: `0` got text, `2` reached the source but couldn't extract (paywall, JS-only, no captions), `3` couldn't reach it at all.
 
-- **"tldr?" / "quick summary" / "gist?"** → Quick-hit format
-- **No depth cue, or standard request** → Standard format
-- **"break this down in detail" / "deep dive" / "walk me through"** → Detailed format
+Pick your route by input:
 
-### Quick-hit (casual requests)
+| Input | Do this |
+|---|---|
+| Video URL (YouTube, Vimeo, Loom, TikTok…) | The script — captions first, local transcription if needed |
+| Article or blog URL | The script; if it exits 2 or 3, fall back to WebFetch |
+| PDF, local file, or file path | The script, or just read it directly |
+| Text pasted into the conversation | Work with it directly — no fetching |
+| Nothing supplied yet | Only now ask what they want broken down |
 
-**[Title/Source]** — 1-2 sentences capturing the core argument. Then 2-3 bullets max — only the points that would change how someone thinks or acts. End with a one-line verdict: read it or skip it, and why.
+**When fetching fails, say so and stop.** Report what you tried and offer a route through — "paste the text and I'll take it from there", or ask whether to try a browser for a page behind a login. Never paper over the gap with what you'd guess the article probably says. If you retrieved only part of the content, summarize that part and label the boundary explicitly.
 
-That's it. Five lines. The user typed 4 characters; respect that energy. If you're writing more than someone can read in 10 seconds, you've overproduced.
+Read the whole thing before writing a word. Skim-summaries miss the argument and land on the topic instead.
 
-### Standard (most requests)
+## Match the shape of the answer to the ask
+
+Read the request's phrasing for how much depth is wanted:
+
+- **"tldr?" / "gist?" / "quick summary"** → Quick-hit
+- **No depth cue** → Standard
+- **"break this down properly" / "deep dive" / "walk me through it"** → Detailed
+
+Input size nudges this too — a 400-word blog post can't fill the Standard format without padding, so drop to Quick-hit rather than inflating. A 90-page report asked about casually still deserves Standard. When the two signals disagree, the user's phrasing wins.
+
+### Quick-hit
+
+**[Title/Source]** — 1–2 sentences on the core argument. Then 2–3 bullets, only the points that would change how someone thinks or acts. Close with one line: worth it or not, and why.
+
+**One sentence per bullet, and about 120 words for the whole thing.** That budget is the hard part, and it's easy to miss by writing five blocks that each run three sentences — which technically looks like the right shape while being twice the length. If a bullet needs a second sentence to make sense, the bullet is carrying two ideas: cut the weaker one rather than extending it. Someone who typed four characters is scanning, and going long defeats the entire point of what they asked for.
+
+### Standard
 
 **[Title/Source]**
 
-**Gist:** 2-3 sentences. State the thesis or core message — not a vague topic description. "This article argues X because Y" beats "This article is about X." If the argument is weak or derivative, say so here.
+**Gist:** 2–3 sentences. State the thesis, not the topic. "This argues X because Y" beats "This is about X." If the argument is weak or derivative, say that here rather than burying it.
 
 **Key takeaways:**
-- 4-6 points, ranked by significance
-- Capture the *insight*, not just the topic. "AI will change hiring" is filler. "Companies using AI screening see 3x more false negatives on non-traditional candidates" is useful.
-- Each point should make someone who reads only that bullet meaningfully smarter
+- 4–6 points, ranked by significance, not by running order
+- Capture the insight, not the subject matter. "AI will change hiring" is filler. "AI screening produces 3x more false negatives on non-traditional candidates" is useful.
+- Anyone who reads one bullet and stops should still come away smarter
 
 **Standout details:**
-- Surprising stats, strong quotes, or contrarian claims worth remembering
-- Include enough context that the detail makes sense on its own
+- Surprising numbers, strong quotes, contrarian claims worth remembering
+- Carry enough context that each one stands on its own
 
 **What this misses:**
-If the content has blind spots, weak reasoning, missing context, or obvious counterarguments — say so. One or two lines. If the content is genuinely solid and complete, skip this section rather than manufacturing criticism. But most content has gaps, and flagging them is one of the most valuable things a summary can do — it's something the original author won't tell you.
+Blind spots, weak reasoning, absent context, obvious counterarguments the author dodged. One or two lines. This is often the most valuable thing in the summary, because it's the part the original author will never tell you. If the piece is genuinely solid, skip this section — manufacturing criticism to fill a heading is worse than leaving it out.
 
-**So what?**
-What should the user *do* with this? Be specific and forward-looking. Not "this is interesting for AI practitioners" but "if you're choosing between approach A and B, this argues strongly for A because of X." If there's genuinely nothing actionable, say "useful context, no immediate action needed."
+**So what:**
+What should they *do* with this? Be concrete and forward-looking. Not "interesting for AI practitioners" but "if you're picking between A and B, this argues for A because of X." If nothing is actionable, say "useful context, nothing to act on" — that's a real answer.
 
-**Verdict:** One honest line. Is the original worth consuming? Be specific about what they'd get from the full version that this summary doesn't capture. "Yes — the examples hit harder in the original" or "No — this summary has everything; the original is 3x longer with no additional insight."
+**Verdict:** One honest line on whether the original is worth their time, and specifically what the full version gives them that this summary doesn't. "Yes — the examples land harder in full" or "No — this covers it; the original is 3x longer with nothing extra."
 
-### Detailed (when asked for depth)
+### Detailed
 
-Use the Standard format plus:
-
-**Section breakdown:**
-Brief summary of each major section/chapter so the user can jump to what interests them.
-
-Only add this when the content has natural sections and the user asked for depth.
+Standard, plus a **Section breakdown** — a line per major section so they can jump to what interests them. Only worth adding when the content has real sections.
 
 ### Technical content (docs, papers, APIs)
 
-Regardless of depth level, lead with what the reader needs to **use** or **apply** the information. The very first sentence after the title should be implementation-focused: how to enable it, how to call it, what the command is. Background theory and "what is this" definitions go later. A developer reading API docs wants "how do I implement this" before "why was this designed this way."
+Lead with what the reader needs to *use*: how to enable it, what to call, which command. Background and design rationale come after. Someone reading API docs wants "how do I implement this" before "why was this designed this way."
+
+## Several sources at once
+
+When handed multiple links, don't produce N summaries stacked up — that's just the reading problem again in a shorter font. Synthesize:
+
+- Open with what they collectively establish
+- Then where they agree, and more usefully, **where they contradict each other** — name which source claims what
+- Flag which single one is worth reading in full, if any
+
+Fetch what you can and note any that failed rather than silently dropping them from the set.
 
 ## Principles
 
-These aren't rules to follow mechanically — they're the reasoning behind why good summaries work.
+Not rules to execute mechanically — the reasoning behind why good summaries work.
 
-**Your judgment is the product.** Anyone can compress text. The reason this skill exists is to provide what raw summarization doesn't: editorial opinion, blind spot detection, and a clear verdict. If your output reads like a neutral book report, you've failed. Take a stance on what matters, what's weak, and whether the user should invest their time.
+**Your judgment is the product.** Anyone can compress text; models are very good at it. This skill exists for what plain compression doesn't give: an editorial stance, blind-spot detection, a verdict. Output that reads like a neutral book report has failed even when every fact in it is correct.
 
-**Extract signal, don't compress.** Most content is 80% filler. A summary that covers every section equally is doing it wrong. Spend your words on the 20% that matters and skip the rest. If a 3000-word article has one genuinely new idea, lead with that idea.
+**Extract signal, don't compress evenly.** Most content is largely filler. Covering every section in proportion is the mistake. If a 3,000-word article carries one genuinely new idea, lead with that idea and let the rest go.
 
-**Preserve the details that give claims weight.** Numbers, names, dates, and concrete examples are what make a summary worth reading. "Revenue grew significantly" is noise. "Revenue grew 34% YoY to $4.2B" is signal. When you strip specifics, you strip the reason to trust the claim.
+**Keep the specifics that give claims their weight.** "Revenue grew significantly" is noise. "Revenue grew 34% to $4.2B" is signal. Stripping numbers, names, and dates strips the reader's reason to believe any of it.
 
-**Plain language.** Translate jargon into what it actually means. If the source says "synergistic go-to-market alignment," you say "sales and marketing working together." The user's time is the scarcest resource.
+**Separate the source's claims from yours.** When you assess, make the seam visible — "the author claims X; that conflicts with Y." A reader should always be able to tell where the summary ends and the opinion starts.
+
+**Plain language.** Translate jargon into meaning. "Synergistic go-to-market alignment" becomes "sales and marketing working together." Their time is the scarce resource, which is the entire reason they asked.

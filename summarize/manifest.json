@@ -1,8 +1,9 @@
 {
   "name": "summarize",
-  "description": "Distill any content into what actually matters — URLs, articles, videos, PDFs, documents, pasted text",
-  "version": "1.0.0",
+  "description": "Turn any content into a decision — URLs, articles, videos, PDFs, documents, pasted text",
+  "version": "2.0.0",
   "files": [
-    "SKILL.md"
+    "SKILL.md",
+    "scripts/get_content.py"
   ]
 }
