@@ -13,7 +13,7 @@ curl -fsSL https://raw.githubusercontent.com/daniel9834/claude-skills/main/insta
 | Skill | What it does | Install |
 |-------|-------------|---------|
 | `content-multiplier` | Turn one piece of content into platform-native posts across LinkedIn, X, Instagram, TikTok, YouTube, and Threads. | `curl -fsSL https://raw.githubusercontent.com/daniel9834/claude-skills/main/install.sh \| bash -s content-multiplier` |
-| `scrape-leads` | Generate leads from Google Maps, Instagram, TikTok, YouTube. Finds emails and writes outreach. | `curl -fsSL https://raw.githubusercontent.com/daniel9834/claude-skills/main/install.sh \| bash -s scrape-leads` |
+| `scrape-leads` | Generate leads from Google Maps, Instagram, TikTok, YouTube, and X. Finds emails and writes outreach. | `curl -fsSL https://raw.githubusercontent.com/daniel9834/claude-skills/main/install.sh \| bash -s scrape-leads` |
 | `summarize` | Turn a URL, article, YouTube video, or PDF into a decision — a verdict and the gaps, not a neutral recap. Pulls video transcripts automatically, and refuses to summarise anything it couldn't actually read. | `curl -fsSL https://raw.githubusercontent.com/daniel9834/claude-skills/main/install.sh \| bash -s summarize` |
 
 ## How it works

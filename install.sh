@@ -23,7 +23,7 @@ if [ -z "$SKILL_NAME" ]; then
   echo "  curl -fsSL $BASE_URL/install.sh | bash -s <skill-name>"
   echo ""
   echo "Available skills:"
-  echo "  scrape-leads    — Generate leads from Google Maps, Instagram, TikTok, YouTube"
+  echo "  scrape-leads    - Generate leads from Google Maps, Instagram, TikTok, YouTube, X"
   echo "  summarize       — Distill any content into what actually matters"
   echo ""
   exit 1
